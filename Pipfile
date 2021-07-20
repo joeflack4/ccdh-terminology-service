@@ -48,7 +48,11 @@ rfc3986 = "*"
 neo4j = "*"
 httpx = "*"
 linkml-runtime = "*"
-tccm-api = {editable = true, git = "https://github.com/HOT-Ecosystem/tccm-api"}
+# tccm-api: I'm getting "linkml_model" import errors, and I think it's because
+# ...linkml dependencies (e.g. linkml-runtime) have not been updated.
+# ...so I'm trying that here. - jef 2021/07/20
+tccm-api = {editable = true, git = "https://github.com/joeflack4/tccm-api", ref = "bugfix_linkml-dependency"}
+# tccm-api = {editable = true, git = "https://github.com/HOT-Ecosystem/tccm-api"}
 tccm-model = {editable = true, git = "https://github.com/HOT-Ecosystem/tccm-model"}
 
 [requires]
