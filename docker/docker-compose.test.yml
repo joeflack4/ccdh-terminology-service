@@ -1,0 +1,44 @@
+version: "3"
+services:
+  ccdh-api-test:
+    build:
+      dockerfile: ./docker/ccdh-api/Dockerfile
+      context: ..
+    container_name: ccdh-api-test
+    restart: on-failure
+    ports:
+      - "6070:7000"
+    env_file:
+      - .env
+    depends_on:
+      ccdh-neo4j-test:
+        condition: service_healthy
+  ccdh-neo4j-test:
+    image: neo4j:4.3.2
+    container_name: neo4j-test
+    restart: always
+    volumes:
+      - ./neo4j-test/logs:/logs
+      - ./neo4j-test/data:/data
+      - ./neo4j-test/plugins:/var/lib/neo4j/plugins
+      - ./neo4j-test/conf:/var/lib/neo4j/conf
+      - ./neo4j-test/import:/var/lib/neo4j/import
+      - ./neo4j-test/wrapper.sh:/opt/wrapper.sh
+      - ./neo4j-test/initialize_neo4j.sh:/opt/initialize_neo4j.sh
+      - ./neo4j-test/cyphers:/cyphers
+    ports:
+      - $NEO4J_BOLT_PORT:6687
+    environment:
+      NEO4J_AUTH: $NEO4J_USERNAME/$NEO4J_PASSWORD
+      NEO4J_dbms_memory_heap_max__size: 8G
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:6474"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    entrypoint: /opt/wrapper.sh
+
+volumes:
+  ccdh-neo4j-test:
