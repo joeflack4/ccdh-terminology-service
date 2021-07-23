@@ -7,7 +7,7 @@ services:
     container_name: ccdh-api-test
     restart: on-failure
     ports:
-      - "6070:8000"
+      - "6070:7000"
     env_file:
       - .env
     depends_on:
